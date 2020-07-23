@@ -1,5 +1,5 @@
 # caddy-cloudflare-docker-compose
-Use docker-compose to deploy Caddy v2 reverse proxy with a Cloudflare managed domain.
+Use docker-compose to deploy Caddy v2 as a reverse proxy with a Cloudflare managed domain.
 
 ## Foreword
 
