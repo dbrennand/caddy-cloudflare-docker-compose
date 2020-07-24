@@ -5,6 +5,8 @@ Use docker-compose to deploy Caddy v2 as a reverse proxy with a Cloudflare manag
 
 This repository was created in conjunction with my [blog post](InsertLink) which provides prerequisites required before running the docker-compose file.
 
+This repository shows how Caddy can be utilised as a reverse proxy for web applications. In this example, [freshrss](https://www.freshrss.org/) is used. 
+
 ## Usage
 
 1. Copy the `ExampleCaddyfile` using the following command: `cp ExampleCaddyfile Caddyfile`.
