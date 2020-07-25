@@ -1,0 +1,62 @@
+---
+version: "3"
+services:
+  # Caddy container
+  caddy:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    image: caddy:cloudflare
+    container_name: caddy
+    # Publish ports 80 and 443 on 0.0.0.0 interface
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - frontend
+      - backend
+    volumes:
+      # Persistent data for caddy using a named docker volume
+      - caddy_data:/data
+      # Mount Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      CLOUDFLARE_API_TOKEN: "Insert your Cloudflare API token here."
+    restart: unless-stopped
+  # Example Freshrss container
+  # https://docs.linuxserver.io/images/docker-freshrss
+  # Use this example as a guide
+  # Alter this application to be whatever application you want to deploy
+  freshrss:
+    image: linuxserver/freshrss
+    container_name: freshrss
+    depends_on:
+      - caddy
+    # Expose port 80 without publishing to the host machine
+    expose:
+      - 80
+    networks:
+      - backend
+    volumes:
+      # Persistent data for freshrss using a named docker volume
+      - freshrss_data:/config
+    environment:
+      # Use the command "id yourusername" to identify your user's PUID and PGID
+      PUID: "1000"
+      PGID: "1000"
+      # Alter to your time zone
+      TZ: "Europe/London"
+    restart: unless-stopped
+
+# Create two networks
+# 1. Create a frontend network for the Caddy container. This is the only container exposed to the internet
+# 2. Create a backend network for all other container services. These are **not** exposed directly to the internet
+networks:
+  frontend:
+  backend:
+
+# Create two docker volumes
+# Both volumes are created to allow containers to persist data
+volumes:
+  caddy_data:
+  freshrss_data:

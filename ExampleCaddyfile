@@ -1,0 +1,43 @@
+{
+    # Disable the Caddy admin API
+    # This is personal preference, you can remove this if desired
+    admin off
+    email example@example.com
+}
+# Uncomment the below snippet to apply some useful security headers to applications
+# https://caddyserver.com/docs/caddyfile/directives/header#examples
+#(securityheaders) {
+#    header {
+#        # Disable clients from sniffing the media type
+#        X-Content-Type-Options nosniff
+#
+#        # Clickjacking protection
+#        X-Frame-Options DENY
+#
+#        # Keep referrer data off of HTTP connections
+#        Referrer-Policy no-referrer-when-downgrade
+#    }
+#}
+# Site block starts here
+subdomain.example.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+    # Uncomment the line below to apply the security headers snippet
+    #import securityheaders
+    reverse_proxy freshrss:80
+}
+# The site block below can be used to deploy another application
+# For this to work, you MUST have a CNAME record in Cloudflare referencing your A record
+# It also provides an example to only allow specific IPs to an application
+# Make sure you uncomment the block to use it
+#subdomain2.example.com {
+#    # Use the remote_ip matcher definition to allow only specific IPs to the application
+#    @allowedips {
+#        remote_ip 192.168.0.27 192.168.1.18 10.0.0.0/8
+#    }
+#    tls {
+#        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+#    }
+#    reverse_proxy @allowedips appname:80
+#}
